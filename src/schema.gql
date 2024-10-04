@@ -1,0 +1,46 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Schedule {
+  id: Int!
+  weekday: String!
+  start_time: String!
+  end_time: String!
+  user: User!
+}
+
+type Attendance {
+  id: Int!
+  date: String!
+  time_entry: String!
+  time_departure: String!
+  state: String!
+  user: User!
+}
+
+type Document {
+  id: Int!
+  type: String!
+  month: String!
+  year: Float!
+  url: String!
+  user: User!
+}
+
+type User {
+  id: Int!
+  dni: String!
+  name: String!
+  last_name: String!
+  phone: String
+  salary: Float!
+  rol: String!
+  schedules: [Schedule!]!
+  attendances: [Attendance!]!
+  documents: [Document!]!
+}
+
+type Query {
+  users: [User!]!
+}
