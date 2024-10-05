@@ -24,7 +24,7 @@ export class User {
   last_name: string;
 
   @Field({ nullable: true })
-  @Column({ length: 9 })
+  @Column({ length: 9, nullable: true })
   phone?: string;
 
   @Field(() => Float)
