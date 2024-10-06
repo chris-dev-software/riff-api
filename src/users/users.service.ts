@@ -35,7 +35,7 @@ export class UsersService {
       });
 
       if (userFound) {
-        throw new ConflictException('El usuario ya existe');
+        throw new ConflictException('El  dni ya existe, vuelva a intentarlo');
       }
 
       const hashedPassword = await bcrypt.hash(password, 10);
@@ -71,13 +71,12 @@ export class UsersService {
         throw new Error('El usuario no existe');
       }
 
-      if (dni) {
-        const userFound = await this.usersRepository.findOne({
-          where: { dni },
-        });
-        if (userFound && userFound.id !== id) {
-          throw new ConflictException('El DNI ya está en uso por otro usuario');
-        }
+      const userFound = await this.usersRepository.findOne({
+        where: { dni },
+      });
+
+      if (userFound && dni !== userFound.dni) {
+        throw new ConflictException('El DNI ya está en uso por otro usuario');
       }
 
       const updatedUser = Object.assign(user, updateUserInput);
