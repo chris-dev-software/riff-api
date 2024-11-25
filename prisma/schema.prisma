@@ -1,0 +1,124 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum DayOfWeek {
+  LUNES
+  MARTES
+  MIERCOLES
+  JUEVES
+  VIERNES
+  SABADO
+  DOMINGO
+}
+
+model User {
+  id         Int      @id @default(autoincrement())
+  dni        String   @unique
+  name       String
+  last_name  String
+  salary     Float
+  role       Role     @default(USER)
+  status     Status   @default(ACTIVE)
+  password   String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  address    String?
+  phone      String?
+
+  Schedules  Schedules[]
+  Attendances  Attendances[]
+  Documents Documents[]
+
+}
+
+model Schedules {
+  id         Int       @id @default(autoincrement())
+  user_id    Int
+  weekday    DayOfWeek
+  start_time String
+  end_time   String
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+}
+
+enum State {
+  PRESENTE
+  AUSENTE
+  TARDE
+  JUSTIFICADO
+}
+
+model Attendances {
+  id             Int      @id @default(autoincrement())
+  user_id        Int
+  date           String
+  time_entry     String
+  time_departure String
+  state          State
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  user User @relation(fields: [user_id], references: [id])
+
+  @@unique([user_id, date])
+}
+
+enum Month {
+  ENERO
+  FEBRERO
+  MARZO
+  ABRIL
+  MAYO
+  JUNIO
+  JULIO
+  AGOSTO
+  SETIEMBRE
+  OCTUBRE
+  NOVIEMBRE
+  DICIEMBRE
+}
+
+enum DocumentType {
+  REMUNERACION
+  GRATIFICACION
+}
+
+model Documents {
+  id      Int          @id @default(autoincrement())
+  user_id Int
+  type    DocumentType
+  month   Month
+  year    Int
+  url     String
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
+
+  user    User         @relation(fields: [user_id], references: [id]) 
+
+  @@unique([user_id, type, month, year])
+}
+
